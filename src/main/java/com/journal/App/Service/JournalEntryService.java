@@ -5,6 +5,7 @@ import com.journal.App.Repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +16,23 @@ public class JournalEntryService {
 
     @Autowired
     private UserEntryService uer;
+// if you put transaction here then all the things in those method will be considered as one
+// tranasction if anything fails it will make suer it will roll back
+    @Transactional
     public List<JournalEntity> saveJournalEntry(JournalEntity j,String userName)
     {
-        User user=uer.findByUserName(userName);
-       JournalEntity jj=jer.save(j);
-       user.getJournalEntries().add(jj);
-       uer.save(user);
-       return jer.findAll();
+        try {
+            User user = uer.findByUserName(userName);
+            JournalEntity jj = jer.save(j);
+            user.getJournalEntries().add(jj);
+            uer.save(user);
+            return jer.findAll();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            throw new RuntimeException("error occured while dealing with exception"+e);
+        }
     }
     public List<JournalEntity> save(JournalEntity j)
     {
