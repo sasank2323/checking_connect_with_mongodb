@@ -18,7 +18,7 @@ public class AppApplication {
 
 	//interface -- platform transaction manger ,implementation -mongo transaction manager
 	// it have commit ,roll back etc..,
-	@Bean
+	"@Bean
 	public PlatformTransactionManager falana(MongoDatabaseFactory dbFactory){
 		return new MongoTransactionManager(dbFactory);
 	}
